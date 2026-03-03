@@ -2,22 +2,32 @@
 
 replicaCount: 1
 
-# Sub-chart image overrides (passed through to backend/frontend/postgres sub-charts)
-backend:
-  replicaCount: 1
-  image:
-    repository: tochratana/prod-api
-    tag: "01d931c2"
-    pullPolicy: Always
-
+# Sub-chart overrides — keys must match dependency chart names
 frontend:
-  replicaCount: 1
+  enabled: true
   image:
     repository: tochratana/prod-ui
     tag: "b2518c6c"
     pullPolicy: Always
+  config:
+    NEXT_PUBLIC_API_URL: "/api"
+    NEXT_PUBLIC_APP_NAME: "MyApp"
+
+backend:
+  enabled: true
+  image:
+    repository: tochratana/prod-api
+    tag: "01d931c2"
+    pullPolicy: Always
+  config:
+    SPRING_PROFILES_ACTIVE: "k8s"
+    LOGGING_LEVEL_COM_EXAMPLE: "INFO"
+    SERVER_PORT: "8080"
+  database:
+    name: appdb
 
 postgres:
+  enabled: true
   persistence:
     size: 10Gi
     storageClass: ""
@@ -46,35 +56,3 @@ ingress:
     - secretName: full-stack-dpl-tls
       hosts:
         - full-stack-dpl.tochratana.com
-
-config:
-  frontend:
-    NEXT_PUBLIC_API_URL: "/api"
-    NEXT_PUBLIC_APP_NAME: "MyApp"
-  backend:
-    SPRING_PROFILES_ACTIVE: "k8s"
-    LOGGING_LEVEL_COM_EXAMPLE: "INFO"
-    SERVER_PORT: "8080"
-
-resources:
-  frontend:
-    requests:
-      memory: "256Mi"
-      cpu: "250m"
-    limits:
-      memory: "512Mi"
-      cpu: "500m"
-  backend:
-    requests:
-      memory: "512Mi"
-      cpu: "500m"
-    limits:
-      memory: "1Gi"
-      cpu: "1000m"
-  postgres:
-    requests:
-      memory: "256Mi"
-      cpu: "250m"
-    limits:
-      memory: "512Mi"
-      cpu: "500m"
