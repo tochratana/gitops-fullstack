@@ -3,12 +3,12 @@ replicaCount: 1
 
 images:
   frontend:
-    repository: your-registry/frontend
-    tag: "latest"
+    repository: tochratana/prod-ui
+    tag: "b2518c6c"
     pullPolicy: Always
   backend:
-    repository: your-registry/backend
-    tag: "latest"
+    repository: tochratana/prod-api
+    tag: "01d931c2"
     pullPolicy: Always
   postgres:
     repository: postgres
