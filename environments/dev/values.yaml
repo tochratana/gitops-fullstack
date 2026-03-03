@@ -78,4 +78,4 @@ postgres:
 
 ingress:
   hosts:
-    - host: dev-app.example.com
+    - host: full-stack-dpl.tochratana.com

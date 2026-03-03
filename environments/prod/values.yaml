@@ -16,7 +16,7 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
   hosts:
-    - host: app.example.com
+    - host: full-stack-dpl.tochratana.com
       paths:
         - path: /
           pathType: Prefix
@@ -27,9 +27,9 @@ ingress:
           backend:
             service: backend
   tls:
-    - secretName: app-tls
+    - secretName: full-stack-dpl-tls
       hosts:
-        - app.example.com
+        - full-stack-dpl.tochratana.com
 
 postgresql:
   persistence:
@@ -84,8 +84,8 @@ postgres:
 
 ingress:
   hosts:
-    - host: app.example.com
+    - host: full-stack-dpl.tochratana.com
   tls:
-    - secretName: app-tls
+    - secretName: full-stack-dpl-tls
       hosts:
-        - app.example.com
+        - full-stack-dpl.tochratana.com

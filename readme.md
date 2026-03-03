@@ -14,7 +14,7 @@ The project uses a library chart pattern to maximize code reuse and maintain con
 ```bash
 User Request
     ↓
-  Ingress (Domain: app.example.com)
+  Ingress (Domain: full-stack-dpl.tochratana.com)
     ↓
 ┌─────────────────────────────────────┐
 │         /api → Backend Service       │

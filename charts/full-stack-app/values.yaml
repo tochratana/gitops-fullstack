@@ -35,7 +35,7 @@ ingress:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   hosts:
-    - host: app.example.com
+    - host: full-stack-dpl.tochratana.com
       paths:
         - path: /
           pathType: Prefix
@@ -46,9 +46,9 @@ ingress:
           service: backend
           port: 8080
   tls:
-    - secretName: app-tls
+    - secretName: full-stack-dpl-tls
       hosts:
-        - app.example.com
+        - full-stack-dpl.tochratana.com
 
 # PostgreSQL configuration
 postgresql:
