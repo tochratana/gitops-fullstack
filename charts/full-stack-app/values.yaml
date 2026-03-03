@@ -19,7 +19,7 @@ backend:
   enabled: true
   image:
     repository: tochratana/prod-api
-    tag: "870c362a"
+    tag: "1bf73597"
     pullPolicy: Always
   config:
     SPRING_PROFILES_ACTIVE: "k8s"
@@ -27,7 +27,6 @@ backend:
     SERVER_PORT: "8080"
   database:
     name: blog_db
-
 postgres:
   enabled: true
 # ─────────────────────────────────────────────
