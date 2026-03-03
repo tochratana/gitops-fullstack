@@ -66,3 +66,26 @@ resources:
     limits:
       memory: "1Gi"
       cpu: "1000m"
+
+frontend:
+  replicaCount: 3
+  image:
+    tag: prod-latest
+  
+backend:
+  replicaCount: 3
+  image:
+    tag: prod-latest
+
+postgres:
+  persistence:
+    size: 50Gi
+    storageClass: premium-rwo
+
+ingress:
+  hosts:
+    - host: app.example.com
+  tls:
+    - secretName: app-tls
+      hosts:
+        - app.example.com

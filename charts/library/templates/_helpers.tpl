@@ -1,0 +1,44 @@
+{{- define "library.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{- define "library.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "library.labels" -}}
+helm.sh/chart: {{ include "library.name" . }}-{{ .Chart.Version | replace "+" "_" }}
+{{ include "library.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{- define "library.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "library.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{- define "library.commonLabels" -}}
+{{- $ := index . 0 }}
+{{- $component := index . 1 }}
+{{- $extraLabels := index . 2 | default dict }}
+{{- $labels := merge (dict
+    "app.kubernetes.io/name" (include "library.name" $)
+    "app.kubernetes.io/instance" $.Release.Name
+    "app.kubernetes.io/component" $component
+    "app.kubernetes.io/managed-by" $.Release.Service
+    "helm.sh/chart" (printf "%s-%s" $.Chart.Name $.Chart.Version)
+) $extraLabels -}}
+{{- toYaml $labels }}
+{{- end }}

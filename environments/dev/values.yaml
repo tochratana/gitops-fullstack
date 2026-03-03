@@ -1,61 +1,81 @@
-# Development environment overrides
-replicaCount: 1
+# # Development environment overrides
+# replicaCount: 1
 
-images:
-  frontend:
+# images:
+#   frontend:
+#     tag: dev-latest
+#   backend:
+#     tag: dev-latest
+
+# ingress:
+#   enabled: true
+#   hosts:
+#     - host: dev-app.example.com
+#       paths:
+#         - path: /
+#           pathType: Prefix
+#           backend:
+#             service: frontend
+#         - path: /api
+#           pathType: Prefix
+#           backend:
+#             service: backend
+#   tls:
+#     - secretName: dev-app-tls
+#       hosts:
+#         - dev-app.example.com
+
+# postgresql:
+#   persistence:
+#     size: 5Gi
+
+# config:
+#   frontend:
+#     NEXT_PUBLIC_API_URL: /api
+#     NEXT_PUBLIC_APP_NAME: "MyApp (Dev)"
+#   backend:
+#     SPRING_PROFILES_ACTIVE: dev
+#     LOGGING_LEVEL_COM_EXAMPLE: DEBUG
+
+# resources:
+#   frontend:
+#     requests:
+#       memory: "128Mi"
+#       cpu: "100m"
+#     limits:
+#       memory: "256Mi"
+#       cpu: "250m"
+#   backend:
+#     requests:
+#       memory: "256Mi"
+#       cpu: "200m"
+#     limits:
+#       memory: "512Mi"
+#       cpu: "500m"
+#   postgres:
+#     requests:
+#       memory: "128Mi"
+#       cpu: "100m"
+#     limits:
+#       memory: "256Mi"
+#       cpu: "250m"
+
+frontend:
+  image:
     tag: dev-latest
-  backend:
+  config:
+    NEXT_PUBLIC_APP_NAME: "MyApp (Dev)"
+  
+backend:
+  image:
     tag: dev-latest
+  config:
+    LOGGING_LEVEL_COM_EXAMPLE: DEBUG
 
-ingress:
-  enabled: true
-  hosts:
-    - host: dev-app.example.com
-      paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service: frontend
-        - path: /api
-          pathType: Prefix
-          backend:
-            service: backend
-  tls:
-    - secretName: dev-app-tls
-      hosts:
-        - dev-app.example.com
-
-postgresql:
+postgres:
   persistence:
     size: 5Gi
 
-config:
-  frontend:
-    NEXT_PUBLIC_API_URL: /api
-    NEXT_PUBLIC_APP_NAME: "MyApp (Dev)"
-  backend:
-    SPRING_PROFILES_ACTIVE: dev
-    LOGGING_LEVEL_COM_EXAMPLE: DEBUG
-
-resources:
-  frontend:
-    requests:
-      memory: "128Mi"
-      cpu: "100m"
-    limits:
-      memory: "256Mi"
-      cpu: "250m"
-  backend:
-    requests:
-      memory: "256Mi"
-      cpu: "200m"
-    limits:
-      memory: "512Mi"
-      cpu: "500m"
-  postgres:
-    requests:
-      memory: "128Mi"
-      cpu: "100m"
-    limits:
-      memory: "256Mi"
-      cpu: "250m"
+ingress:
+  hosts:
+    - host: dev-app.example.com

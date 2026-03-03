@@ -1,0 +1,86 @@
+# PostgreSQL specific values
+replicaCount: 1
+
+image:
+  repository: postgres
+  tag: "15-alpine"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+      protocol: TCP
+
+ports:
+  - name: postgres
+    containerPort: 5432
+
+persistence:
+  enabled: true
+  size: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClass: ""
+
+auth:
+  username: appuser
+  database: appdb
+  # password will be generated if not provided
+
+secretData:
+  username: {{ .Values.auth.username }}
+  password: {{ .Values.auth.password | default (randAlphaNum 16) }}
+
+env:
+  - name: POSTGRES_DB
+    value: {{ .Values.auth.database }}
+  - name: POSTGRES_USER
+    valueFrom:
+      secretKeyRef:
+        name: {{ .Release.Name }}-postgres-secret
+        key: username
+  - name: POSTGRES_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: {{ .Release.Name }}-postgres-secret
+        key: password
+  - name: PGDATA
+    value: /var/lib/postgresql/data/pgdata
+
+volumeMounts:
+  - name: postgres-storage
+    mountPath: /var/lib/postgresql/data
+
+volumes:
+  - name: postgres-storage
+    persistentVolumeClaim:
+      claimName: {{ .Release.Name }}-postgres-pvc
+
+probes:
+  liveness:
+    exec:
+      command:
+        - pg_isready
+        - -U
+        - {{ .Values.auth.username }}
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readiness:
+    exec:
+      command:
+        - pg_isready
+        - -U
+        - {{ .Values.auth.username }}
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"

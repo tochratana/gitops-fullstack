@@ -1,0 +1,6 @@
+apiVersion: v2
+name: library
+description: A library chart for shared templates
+type: library
+version: 0.1.0
+appVersion: "1.0.0"

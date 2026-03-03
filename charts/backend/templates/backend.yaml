@@ -1,0 +1,14 @@
+{{- $ := . }}
+{{- $component := "backend" }}
+{{- $values := .Values }}
+
+{{- include "library.configmap" (list $ $component (dict "config" $values.config)) }}
+
+---
+{{- $backendValues := deepCopy $values }}
+{{- $_ := set $backendValues "env" $values.env }}
+{{- $_ := set $backendValues "envFrom" $values.envFrom }}
+{{- include "library.deployment" (list $ $component $backendValues) }}
+
+---
+{{- include "library.service" (list $ $component $values) }}

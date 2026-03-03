@@ -1,0 +1,13 @@
+{{- define "library.configmap" -}}
+{{- $ := index . 0 }}
+{{- $component := index . 1 }}
+{{- $values := index . 2 }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-%s-config" $.Release.Name $component }}
+  labels:
+    {{- include "library.commonLabels" (list $ $component) | nindent 4 }}
+data:
+  {{- toYaml $values.config | nindent 2 }}
+{{- end }}

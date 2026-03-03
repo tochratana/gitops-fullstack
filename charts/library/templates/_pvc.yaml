@@ -1,0 +1,20 @@
+{{- define "library.pvc" -}}
+{{- $ := index . 0 }}
+{{- $component := index . 1 }}
+{{- $values := index . 2 }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ printf "%s-%s-pvc" $.Release.Name $component }}
+  labels:
+    {{- include "library.commonLabels" (list $ $component) | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml $values.persistence.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ $values.persistence.size }}
+  {{- if $values.persistence.storageClass }}
+  storageClassName: {{ $values.persistence.storageClass }}
+  {{- end }}
+{{- end }}

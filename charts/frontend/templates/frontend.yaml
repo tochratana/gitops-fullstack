@@ -1,0 +1,11 @@
+{{- $ := . }}
+{{- $component := "frontend" }}
+{{- $values := .Values }}
+
+{{- include "library.configmap" (list $ $component (dict "config" $values.config)) }}
+
+---
+{{- include "library.deployment" (list $ $component $values) }}
+
+---
+{{- include "library.service" (list $ $component $values) }}

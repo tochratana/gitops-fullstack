@@ -1,0 +1,49 @@
+# Main application values
+frontend:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: your-registry/frontend
+    tag: latest
+  config:
+    NEXT_PUBLIC_API_URL: /api
+    NEXT_PUBLIC_APP_NAME: "MyApp"
+
+backend:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: your-registry/backend
+    tag: latest
+  config:
+    SPRING_PROFILES_ACTIVE: k8s
+    LOGGING_LEVEL_COM_EXAMPLE: DEBUG
+
+postgres:
+  enabled: true
+  persistence:
+    size: 10Gi
+  auth:
+    username: appuser
+    database: appdb
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: frontend
+          port: 3000
+        - path: /api
+          pathType: Prefix
+          service: backend
+          port: 8080
+  tls:
+    - secretName: app-tls
+      hosts:
+        - app.example.com

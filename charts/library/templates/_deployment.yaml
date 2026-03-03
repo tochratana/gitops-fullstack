@@ -1,0 +1,65 @@
+{{- define "library.deployment" -}}
+{{- $ := index . 0 }}
+{{- $component := index . 1 }}
+{{- $values := index . 2 }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-%s" $.Release.Name $component }}
+  labels:
+    {{- include "library.commonLabels" (list $ $component) | nindent 4 }}
+spec:
+  replicas: {{ $values.replicaCount | default $.Values.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "library.commonLabels" (list $ $component) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "library.commonLabels" (list $ $component) | nindent 8 }}
+      {{- if $values.podAnnotations }}
+      annotations:
+        {{- toYaml $values.podAnnotations | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if $values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml $values.imagePullSecrets | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ $component }}
+          image: "{{ $values.image.repository }}:{{ $values.image.tag }}"
+          imagePullPolicy: {{ $values.image.pullPolicy | default "Always" }}
+          ports:
+            {{- range $values.ports }}
+            - containerPort: {{ .containerPort }}
+              name: {{ .name }}
+              protocol: {{ .protocol | default "TCP" }}
+            {{- end }}
+          {{- if $values.env }}
+          env:
+            {{- toYaml $values.env | nindent 12 }}
+          {{- end }}
+          {{- if $values.envFrom }}
+          envFrom:
+            {{- toYaml $values.envFrom | nindent 12 }}
+          {{- end }}
+          {{- if $values.resources }}
+          resources:
+            {{- toYaml $values.resources | nindent 12 }}
+          {{- end }}
+          {{- if $values.probes }}
+          livenessProbe:
+            {{- toYaml $values.probes.liveness | nindent 12 }}
+          readinessProbe:
+            {{- toYaml $values.probes.readiness | nindent 12 }}
+          {{- end }}
+          {{- if $values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml $values.volumeMounts | nindent 12 }}
+          {{- end }}
+      {{- if $values.volumes }}
+      volumes:
+        {{- toYaml $values.volumes | nindent 8 }}
+      {{- end }}
+{{- end }}

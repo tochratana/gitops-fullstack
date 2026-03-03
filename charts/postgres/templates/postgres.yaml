@@ -1,0 +1,23 @@
+{{- $ := . }}
+{{- $component := "postgres" }}
+{{- $values := .Values }}
+
+{{- include "library.secret" (list $ $component (dict
+    "secretType" "Opaque"
+    "secretData" $values.secretData
+)) }}
+
+{{- if $values.persistence.enabled }}
+---
+{{- include "library.pvc" (list $ $component $values) }}
+{{- end }}
+
+---
+{{- $postgresValues := deepCopy $values }}
+{{- $_ := set $postgresValues "env" $values.env }}
+{{- $_ := set $postgresValues "volumeMounts" $values.volumeMounts }}
+{{- $_ := set $postgresValues "volumes" $values.volumes }}
+{{- include "library.deployment" (list $ $component $postgresValues) }}
+
+---
+{{- include "library.service" (list $ $component $values) }}
