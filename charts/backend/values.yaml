@@ -25,20 +25,20 @@ config:
 
 envFrom:
   - configMapRef:
-      name: {{ .Release.Name }}-backend-config
+      name: "{{ .Release.Name }}-backend-config"
 
 env:
   - name: SPRING_DATASOURCE_URL
-    value: jdbc:postgresql://{{ .Release.Name }}-postgres:5432/{{ .Values.database.name }}
+    value: "jdbc:postgresql://{{ .Release.Name }}-postgres:5432/{{ .Values.database.name }}"
   - name: SPRING_DATASOURCE_USERNAME
     valueFrom:
       secretKeyRef:
-        name: {{ .Release.Name }}-postgres-secret
+        name: "{{ .Release.Name }}-postgres-secret"
         key: username
   - name: SPRING_DATASOURCE_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: {{ .Release.Name }}-postgres-secret
+        name: "{{ .Release.Name }}-postgres-secret"
         key: password
 
 probes:

@@ -32,7 +32,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "library.commonLabels" -}}
 {{- $ := index . 0 }}
 {{- $component := index . 1 }}
-{{- $extraLabels := index . 2 | default dict }}
+{{- $extraLabels := dict }}
+{{- if gt (len .) 2 }}{{- $extraLabels = index . 2 }}{{- end }}
 {{- $labels := merge (dict
     "app.kubernetes.io/name" (include "library.name" $)
     "app.kubernetes.io/instance" $.Release.Name

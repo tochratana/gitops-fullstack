@@ -31,21 +31,21 @@ auth:
   # password will be generated if not provided
 
 secretData:
-  username: {{ .Values.auth.username }}
-  password: {{ .Values.auth.password | default (randAlphaNum 16) }}
+  username: "{{ .Values.auth.username }}"
+  password: "{{ .Values.auth.password | default (randAlphaNum 16) }}"
 
 env:
   - name: POSTGRES_DB
-    value: {{ .Values.auth.database }}
+    value: "{{ .Values.auth.database }}"
   - name: POSTGRES_USER
     valueFrom:
       secretKeyRef:
-        name: {{ .Release.Name }}-postgres-secret
+        name: "{{ .Release.Name }}-postgres-secret"
         key: username
   - name: POSTGRES_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: {{ .Release.Name }}-postgres-secret
+        name: "{{ .Release.Name }}-postgres-secret"
         key: password
   - name: PGDATA
     value: /var/lib/postgresql/data/pgdata
@@ -57,7 +57,7 @@ volumeMounts:
 volumes:
   - name: postgres-storage
     persistentVolumeClaim:
-      claimName: {{ .Release.Name }}-postgres-pvc
+      claimName: "{{ .Release.Name }}-postgres-pvc"
 
 probes:
   liveness:
@@ -65,7 +65,7 @@ probes:
       command:
         - pg_isready
         - -U
-        - {{ .Values.auth.username }}
+        - "{{ .Values.auth.username }}"
     initialDelaySeconds: 30
     periodSeconds: 10
   readiness:
@@ -73,7 +73,7 @@ probes:
       command:
         - pg_isready
         - -U
-        - {{ .Values.auth.username }}
+        - "{{ .Values.auth.username }}"
     initialDelaySeconds: 5
     periodSeconds: 5
 
