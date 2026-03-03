@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: your-registry/backend
+  repository: tochratana/prod-api:01d931c2
   tag: latest
   pullPolicy: Always
 
