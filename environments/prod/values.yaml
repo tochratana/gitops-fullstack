@@ -1,16 +1,32 @@
 # Production environment overrides
-replicaCount: 3
 
-images:
-  frontend:
-    tag: prod-{{ .Values.imageTag }}
-  backend:
-    tag: prod-{{ .Values.imageTag }}
+replicaCount: 1
+
+# Sub-chart image overrides (passed through to backend/frontend/postgres sub-charts)
+backend:
+  replicaCount: 1
+  image:
+    repository: tochratana/prod-api
+    tag: "01d931c2"
+    pullPolicy: Always
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: tochratana/prod-ui
+    tag: "b2518c6c"
+    pullPolicy: Always
+
+postgres:
+  persistence:
+    size: 10Gi
+    storageClass: ""
 
 ingress:
   enabled: true
+  className: nginx
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
@@ -20,72 +36,45 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
-          backend:
-            service: frontend
+          service: frontend
+          port: 3000
         - path: /api
           pathType: Prefix
-          backend:
-            service: backend
+          service: backend
+          port: 8080
   tls:
     - secretName: full-stack-dpl-tls
       hosts:
         - full-stack-dpl.tochratana.com
 
-postgresql:
-  persistence:
-    size: 50Gi
-    storageClass: premium-rwo
-
 config:
   frontend:
-    NEXT_PUBLIC_API_URL: /api
+    NEXT_PUBLIC_API_URL: "/api"
     NEXT_PUBLIC_APP_NAME: "MyApp"
   backend:
-    SPRING_PROFILES_ACTIVE: prod
-    LOGGING_LEVEL_COM_EXAMPLE: INFO
+    SPRING_PROFILES_ACTIVE: "k8s"
+    LOGGING_LEVEL_COM_EXAMPLE: "INFO"
+    SERVER_PORT: "8080"
 
 resources:
   frontend:
     requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
       memory: "512Mi"
       cpu: "500m"
-    limits:
-      memory: "1Gi"
-      cpu: "1000m"
   backend:
     requests:
-      memory: "1Gi"
-      cpu: "1000m"
-    limits:
-      memory: "2Gi"
-      cpu: "2000m"
-  postgres:
-    requests:
       memory: "512Mi"
       cpu: "500m"
     limits:
       memory: "1Gi"
       cpu: "1000m"
-
-frontend:
-  replicaCount: 3
-  image:
-    tag: prod-latest
-  
-backend:
-  replicaCount: 3
-  image:
-    tag: prod-latest
-
-postgres:
-  persistence:
-    size: 50Gi
-    storageClass: premium-rwo
-
-ingress:
-  hosts:
-    - host: full-stack-dpl.tochratana.com
-  tls:
-    - secretName: full-stack-dpl-tls
-      hosts:
-        - full-stack-dpl.tochratana.com
+  postgres:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
