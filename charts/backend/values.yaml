@@ -2,8 +2,8 @@
 replicaCount: 1
 
 image:
-  repository: tochratana/prod-api:01d931c2
-  tag: latest
+  repository: tochratana/prod-api
+  tag: "01d931c2"
   pullPolicy: Always
 
 service:
