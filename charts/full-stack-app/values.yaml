@@ -4,11 +4,11 @@ replicaCount: 1
 images:
   frontend:
     repository: your-registry/frontend
-    tag: latest
+    tag: "latest"
     pullPolicy: Always
   backend:
     repository: your-registry/backend
-    tag: latest
+    tag: "latest"
     pullPolicy: Always
   postgres:
     repository: postgres
@@ -32,7 +32,7 @@ ingress:
   enabled: true
   className: nginx
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   hosts:
     - host: app.example.com
