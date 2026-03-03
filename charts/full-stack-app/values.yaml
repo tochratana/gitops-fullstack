@@ -1,23 +1,20 @@
 # Full-stack application values
 
 replicaCount: 1
-
 # ─────────────────────────────────────────────
 # Sub-chart value overrides
 # Keys MUST match the dependency name so Helm
 # passes them into the correct sub-chart scope.
 # ─────────────────────────────────────────────
-
 frontend:
   enabled: true
   image:
     repository: tochratana/prod-ui
-    tag: "b2518c6c"
+    tag: "92d39c90"
     pullPolicy: Always
   config:
     NEXT_PUBLIC_API_URL: "/api"
     NEXT_PUBLIC_APP_NAME: "MyApp"
-
 backend:
   enabled: true
   image:
@@ -30,10 +27,8 @@ backend:
     SERVER_PORT: "8080"
   database:
     name: appdb
-
 postgres:
   enabled: true
-
 # ─────────────────────────────────────────────
 # Ingress (rendered by full-stack-app/templates/ingress.yaml)
 # ─────────────────────────────────────────────
