@@ -1,37 +1,39 @@
-# Main application values
-frontend:
-  enabled: true
-  replicaCount: 1
-  image:
+# Full-stack application values
+replicaCount: 1
+
+images:
+  frontend:
     repository: your-registry/frontend
     tag: latest
-  config:
-    NEXT_PUBLIC_API_URL: /api
-    NEXT_PUBLIC_APP_NAME: "MyApp"
-
-backend:
-  enabled: true
-  replicaCount: 1
-  image:
+    pullPolicy: Always
+  backend:
     repository: your-registry/backend
     tag: latest
-  config:
-    SPRING_PROFILES_ACTIVE: k8s
-    LOGGING_LEVEL_COM_EXAMPLE: DEBUG
+    pullPolicy: Always
+  postgres:
+    repository: postgres
+    tag: "15-alpine"
+    pullPolicy: IfNotPresent
 
-postgres:
-  enabled: true
-  persistence:
-    size: 10Gi
-  auth:
-    username: appuser
-    database: appdb
+# Service configurations
+service:
+  frontend:
+    type: ClusterIP
+    port: 3000
+  backend:
+    type: ClusterIP
+    port: 8080
+  postgres:
+    type: ClusterIP
+    port: 5432
 
+# Ingress configuration
 ingress:
   enabled: true
   className: nginx
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
   hosts:
     - host: app.example.com
       paths:
@@ -47,3 +49,49 @@ ingress:
     - secretName: app-tls
       hosts:
         - app.example.com
+
+# PostgreSQL configuration
+postgresql:
+  enabled: true
+  auth:
+    username: appuser
+    database: appdb
+    existingSecret: postgres-secret
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: ""
+
+# Configuration maps
+config:
+  frontend:
+    NEXT_PUBLIC_API_URL: "/api"
+    NEXT_PUBLIC_APP_NAME: "MyApp"
+  backend:
+    SPRING_PROFILES_ACTIVE: "k8s"
+    LOGGING_LEVEL_COM_EXAMPLE: "DEBUG"
+    SERVER_PORT: "8080"
+
+# Resource limits
+resources:
+  frontend:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  backend:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+  postgres:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
