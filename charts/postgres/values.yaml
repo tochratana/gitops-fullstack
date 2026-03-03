@@ -28,7 +28,7 @@ persistence:
 auth:
   username: appuser
   database: blog_db
-  password: ""  # Set via secret; override in environment values
+  password: "StrongP@ssw0rd2026"  # Fixed password — change this for production
 
 # env, secretData, volumes, and probes use .Release.Name — injected dynamically
 # by postgres.yaml template. Do NOT use Go template expressions here;
