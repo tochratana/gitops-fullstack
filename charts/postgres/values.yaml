@@ -48,6 +48,8 @@ probes:
         - pg_isready
         - -U
         - appuser
+        - -d
+        - blog_db
     initialDelaySeconds: 30
     periodSeconds: 10
   readiness:
@@ -56,6 +58,8 @@ probes:
         - pg_isready
         - -U
         - appuser
+        - -d
+        - blog_db
     initialDelaySeconds: 5
     periodSeconds: 5
 
