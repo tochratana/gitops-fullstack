@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-backend-config
+  labels:
+    app: {{ .Release.Name }}
+    component: backend
+data:
+  SPRING_PROFILES_ACTIVE: {{ .Values.config.backend.SPRING_PROFILES_ACTIVE | quote }}
+  LOGGING_LEVEL_COM_EXAMPLE: {{ .Values.config.backend.LOGGING_LEVEL_COM_EXAMPLE | quote }}
+  SERVER_PORT: {{ .Values.config.backend.SERVER_PORT | quote }}

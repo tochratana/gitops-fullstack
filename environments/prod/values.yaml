@@ -1,0 +1,68 @@
+# Production environment overrides
+replicaCount: 3
+
+images:
+  frontend:
+    tag: prod-{{ .Values.imageTag }}
+  backend:
+    tag: prod-{{ .Values.imageTag }}
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "30"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "30"
+  hosts:
+    - host: app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service: frontend
+        - path: /api
+          pathType: Prefix
+          backend:
+            service: backend
+  tls:
+    - secretName: app-tls
+      hosts:
+        - app.example.com
+
+postgresql:
+  persistence:
+    size: 50Gi
+    storageClass: premium-rwo
+
+config:
+  frontend:
+    NEXT_PUBLIC_API_URL: /api
+    NEXT_PUBLIC_APP_NAME: "MyApp"
+  backend:
+    SPRING_PROFILES_ACTIVE: prod
+    LOGGING_LEVEL_COM_EXAMPLE: INFO
+
+resources:
+  frontend:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+  backend:
+    requests:
+      memory: "1Gi"
+      cpu: "1000m"
+    limits:
+      memory: "2Gi"
+      cpu: "2000m"
+  postgres:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
