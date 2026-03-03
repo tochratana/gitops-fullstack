@@ -27,7 +27,7 @@ persistence:
 
 auth:
   username: appuser
-  database: appdb
+  database: blog_db
   password: ""  # Set via secret; override in environment values
 
 # env, secretData, volumes, and probes use .Release.Name — injected dynamically

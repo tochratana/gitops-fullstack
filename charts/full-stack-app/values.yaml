@@ -26,7 +26,8 @@ backend:
     LOGGING_LEVEL_COM_EXAMPLE: "DEBUG"
     SERVER_PORT: "8080"
   database:
-    name: appdb
+    name: blog_db
+
 postgres:
   enabled: true
 # ─────────────────────────────────────────────

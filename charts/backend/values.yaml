@@ -53,4 +53,4 @@ resources:
     cpu: "1000m"
 
 database:
-  name: appdb
+  name: blog_db
