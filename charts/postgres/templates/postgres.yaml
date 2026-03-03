@@ -2,9 +2,13 @@
 {{- $component := "postgres" }}
 {{- $values := .Values }}
 
+{{- $dynamicSecretData := dict
+  "username" $values.auth.username
+  "password" ($values.auth.password | default (randAlphaNum 16))
+}}
 {{- include "library.secret" (list $ $component (dict
     "secretType" "Opaque"
-    "secretData" $values.secretData
+    "secretData" $dynamicSecretData
 )) }}
 
 {{- if $values.persistence.enabled }}
@@ -14,9 +18,26 @@
 
 ---
 {{- $postgresValues := deepCopy $values }}
-{{- $_ := set $postgresValues "env" $values.env }}
-{{- $_ := set $postgresValues "volumeMounts" $values.volumeMounts }}
-{{- $_ := set $postgresValues "volumes" $values.volumes }}
+
+{{- $dynamicEnv := list
+  (dict "name" "POSTGRES_DB" "value" $values.auth.database)
+  (dict
+    "name" "POSTGRES_USER"
+    "valueFrom" (dict "secretKeyRef" (dict "name" (printf "%s-postgres-secret" $.Release.Name) "key" "username"))
+  )
+  (dict
+    "name" "POSTGRES_PASSWORD"
+    "valueFrom" (dict "secretKeyRef" (dict "name" (printf "%s-postgres-secret" $.Release.Name) "key" "password"))
+  )
+  (dict "name" "PGDATA" "value" "/var/lib/postgresql/data/pgdata")
+}}
+{{- $_ := set $postgresValues "env" $dynamicEnv }}
+
+{{- $dynamicVolumes := list
+  (dict "name" "postgres-storage" "persistentVolumeClaim" (dict "claimName" (printf "%s-postgres-pvc" $.Release.Name)))
+}}
+{{- $_ := set $postgresValues "volumes" $dynamicVolumes }}
+
 {{- include "library.deployment" (list $ $component $postgresValues) }}
 
 ---

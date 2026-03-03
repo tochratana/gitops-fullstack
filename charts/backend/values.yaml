@@ -23,23 +23,12 @@ config:
   LOGGING_LEVEL_COM_EXAMPLE: DEBUG
   SERVER_PORT: "8080"
 
-envFrom:
-  - configMapRef:
-      name: "{{ .Release.Name }}-backend-config"
+# env and envFrom are injected by the template using .Release.Name — do not use
+# Go template expressions here (values.yaml is never rendered by Helm).
+# These are set via the backend.yaml template which passes dynamic names.
+envFrom: []
 
-env:
-  - name: SPRING_DATASOURCE_URL
-    value: "jdbc:postgresql://{{ .Release.Name }}-postgres:5432/{{ .Values.database.name }}"
-  - name: SPRING_DATASOURCE_USERNAME
-    valueFrom:
-      secretKeyRef:
-        name: "{{ .Release.Name }}-postgres-secret"
-        key: username
-  - name: SPRING_DATASOURCE_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: "{{ .Release.Name }}-postgres-secret"
-        key: password
+env: []
 
 probes:
   liveness:

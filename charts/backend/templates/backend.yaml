@@ -6,8 +6,25 @@
 
 ---
 {{- $backendValues := deepCopy $values }}
-{{- $_ := set $backendValues "env" $values.env }}
-{{- $_ := set $backendValues "envFrom" $values.envFrom }}
+{{- $dynamicEnv := list
+  (dict
+    "name" "SPRING_DATASOURCE_URL"
+    "value" (printf "jdbc:postgresql://%s-postgres:5432/%s" $.Release.Name $values.database.name)
+  )
+  (dict
+    "name" "SPRING_DATASOURCE_USERNAME"
+    "valueFrom" (dict "secretKeyRef" (dict "name" (printf "%s-postgres-secret" $.Release.Name) "key" "username"))
+  )
+  (dict
+    "name" "SPRING_DATASOURCE_PASSWORD"
+    "valueFrom" (dict "secretKeyRef" (dict "name" (printf "%s-postgres-secret" $.Release.Name) "key" "password"))
+  )
+}}
+{{- $_ := set $backendValues "env" $dynamicEnv }}
+{{- $dynamicEnvFrom := list
+  (dict "configMapRef" (dict "name" (printf "%s-backend-config" $.Release.Name)))
+}}
+{{- $_ := set $backendValues "envFrom" $dynamicEnvFrom }}
 {{- include "library.deployment" (list $ $component $backendValues) }}
 
 ---

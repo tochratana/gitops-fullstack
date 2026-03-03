@@ -28,36 +28,18 @@ persistence:
 auth:
   username: appuser
   database: appdb
-  # password will be generated if not provided
+  password: ""  # Set via secret; override in environment values
 
-secretData:
-  username: "{{ .Values.auth.username }}"
-  password: "{{ .Values.auth.password | default (randAlphaNum 16) }}"
-
-env:
-  - name: POSTGRES_DB
-    value: "{{ .Values.auth.database }}"
-  - name: POSTGRES_USER
-    valueFrom:
-      secretKeyRef:
-        name: "{{ .Release.Name }}-postgres-secret"
-        key: username
-  - name: POSTGRES_PASSWORD
-    valueFrom:
-      secretKeyRef:
-        name: "{{ .Release.Name }}-postgres-secret"
-        key: password
-  - name: PGDATA
-    value: /var/lib/postgresql/data/pgdata
+# env, secretData, volumes, and probes use .Release.Name — injected dynamically
+# by postgres.yaml template. Do NOT use Go template expressions here;
+# values.yaml is static YAML and is never rendered by Helm's template engine.
+env: []
+secretData: {}
+volumes: []
 
 volumeMounts:
   - name: postgres-storage
     mountPath: /var/lib/postgresql/data
-
-volumes:
-  - name: postgres-storage
-    persistentVolumeClaim:
-      claimName: "{{ .Release.Name }}-postgres-pvc"
 
 probes:
   liveness:
@@ -65,7 +47,7 @@ probes:
       command:
         - pg_isready
         - -U
-        - "{{ .Values.auth.username }}"
+        - appuser
     initialDelaySeconds: 30
     periodSeconds: 10
   readiness:
@@ -73,7 +55,7 @@ probes:
       command:
         - pg_isready
         - -U
-        - "{{ .Values.auth.username }}"
+        - appuser
     initialDelaySeconds: 5
     periodSeconds: 5
 
