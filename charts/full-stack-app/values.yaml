@@ -10,7 +10,7 @@ frontend:
   enabled: true
   image:
     repository: /prod-ui
-    tag: "98e9915f"
+    tag: "70e14a03"
     pullPolicy: Always
   config:
     NEXT_PUBLIC_API_URL: "/api"
