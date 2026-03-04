@@ -10,7 +10,7 @@ frontend:
   enabled: true
   image:
     repository: tochratana/prod-ui
-    tag: "92d39c90"
+    tag: "19a2819c"
     pullPolicy: Always
   config:
     NEXT_PUBLIC_API_URL: "/api"
