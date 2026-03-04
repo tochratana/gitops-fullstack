@@ -9,7 +9,7 @@ replicaCount: 1
 frontend:
   enabled: true
   image:
-    repository: /prod-ui
+    repository: tochratana/prod-ui
     tag: "3f05b060"
     pullPolicy: Always
   config:

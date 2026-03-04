@@ -49,6 +49,10 @@ spec:
             {{- toYaml $values.resources | nindent 12 }}
           {{- end }}
           {{- if $values.probes }}
+          {{- if $values.probes.startup }}
+          startupProbe:
+            {{- toYaml $values.probes.startup | nindent 12 }}
+          {{- end }}
           livenessProbe:
             {{- toYaml $values.probes.liveness | nindent 12 }}
           readinessProbe:
