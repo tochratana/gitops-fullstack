@@ -9,8 +9,8 @@ replicaCount: 1
 frontend:
   enabled: true
   image:
-    repository: tochratana/prod-ui
-    tag: "19a2819c"
+    repository: /prod-ui
+    tag: "32769b8f"
     pullPolicy: Always
   config:
     NEXT_PUBLIC_API_URL: "/api"
