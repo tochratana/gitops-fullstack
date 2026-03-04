@@ -9,8 +9,8 @@ replicaCount: 1
 frontend:
   enabled: true
   image:
-    repository: /prod-ui
-    tag: "3f05b060"
+    repository: tochratana/prod-ui
+    tag: "70e14a03"
     pullPolicy: Always
   config:
     NEXT_PUBLIC_API_URL: "/api"
@@ -19,12 +19,37 @@ backend:
   enabled: true
   image:
     repository: tochratana/prod-api
-    tag: "d8e5b5cb"
+    tag: "84112e4b"
     pullPolicy: Always
   config:
     SPRING_PROFILES_ACTIVE: "k8s"
     LOGGING_LEVEL_COM_EXAMPLE: "DEBUG"
     SERVER_PORT: "8080"
+  probes:
+    startup:
+      httpGet:
+        path: /actuator/health/liveness
+        port: http
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      failureThreshold: 12
+      timeoutSeconds: 5
+    liveness:
+      httpGet:
+        path: /actuator/health/liveness
+        port: http
+      initialDelaySeconds: 0
+      periodSeconds: 10
+      failureThreshold: 3
+      timeoutSeconds: 5
+    readiness:
+      httpGet:
+        path: /actuator/health/readiness
+        port: http
+      initialDelaySeconds: 0
+      periodSeconds: 5
+      failureThreshold: 3
+      timeoutSeconds: 5
   database:
     name: blog_db
 postgres:
