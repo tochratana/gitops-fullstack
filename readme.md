@@ -514,24 +514,6 @@ kubectl create secret generic postgres-secret \
 
 > **Recommended:** Use [Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) or [External Secrets Operator](https://external-secrets.io/) for production secret management instead of storing passwords in `values.yaml`.
 
----
-
-## 📦 Releases & Versioning
-
-See [**CHANGELOG.md**](CHANGELOG.md) for the full release history.
-
-**Current versions:**
-
-| Chart | Version | App Version |
-|---|---|---|
-| `full-stack-app` (umbrella) | `0.1.0` | `1.0.0` |
-| `frontend` | `0.1.0` | `1.0.0` |
-| `backend` | `0.1.0` | `1.0.0` |
-| `postgres` | `0.1.0` | `15.0` |
-
-To bump versions, update `version` in the respective `Chart.yaml` files and add the entry to `CHANGELOG.md`.
-
----
 
 ## 📋 Troubleshooting
 
