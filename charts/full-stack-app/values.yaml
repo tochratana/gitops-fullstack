@@ -19,7 +19,7 @@ backend:
   enabled: true
   image:
     repository: tochratana/prod-api
-    tag: "1bf73597"
+    tag: "a2acbd2b"
     pullPolicy: Always
   config:
     SPRING_PROFILES_ACTIVE: "k8s"
