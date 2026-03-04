@@ -33,16 +33,19 @@ env: []
 probes:
   liveness:
     httpGet:
-      path: /actuator/health
+      path: /actuator/health/liveness   # ✅ Fix this
       port: http
     initialDelaySeconds: 60
     periodSeconds: 10
+    failureThreshold: 3                 # ✅ Add this too (default is 3, but explicit is safer)
   readiness:
     httpGet:
-      path: /actuator/health/readiness
+      path: /actuator/health/readiness  # ✅ Already correct
       port: http
     initialDelaySeconds: 30
     periodSeconds: 5
+    failureThreshold: 3
+
 
 resources:
   requests:
