@@ -13,7 +13,7 @@ frontend:
     tag: "70e14a03"
     pullPolicy: Always
   config:
-    NEXT_PUBLIC_API_URL: "/api"
+    NEXT_PUBLIC_API_URL: "/api" # Defind routing for after backend
     NEXT_PUBLIC_APP_NAME: "MyApp"
 backend:
   enabled: true
